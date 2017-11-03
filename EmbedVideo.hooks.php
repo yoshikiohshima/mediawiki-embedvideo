@@ -142,6 +142,8 @@ class EmbedVideoHooks {
 			$parser->setHook( $service, "EmbedVideoHooks::parseServiceTag{$service}" );
 		}
 
+		$parser->setHook( 'subtitle', "EembedVideoHooks::parseServiceTagcaption" );
+
 		return true;
 	}
 
