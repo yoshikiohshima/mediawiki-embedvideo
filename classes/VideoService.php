@@ -402,6 +402,20 @@ class VideoService {
 				'#^([\d\w-]+)$#is'
 			]
 		],
+		'youtubeIA' => [
+			'embed'			=> '<script type="text/javascript">varshe interval;var player;console.log("%1$s");function onPlayerStateChange(e) {if (e.data == YT.PlayerState.PLAYING) {interval = window.setInterval(updateEventHighlight, 500); /* update every half-second */ updateEventHighlight(); }; if (e.data == YT.PlayerState.ENDED || e.data == YT.PlayerState.PAUSED || e.data == YT.PlayerState.BUFFERING) { window.clearInterval(interval);}};function onYouTubeIframeAPIReady() {player = new YT.Player("ia-video", {height: %3$d, width:  %2$d, videoId: "%1$s", events: { "onStateChange": onPlayerStateChange }, playerVars: {rel: 0, showinfo: 0},});}</script><div id="ia-holder"><div id="ia-video"></div><div id="ia-caption"></div></div><script type="text/javascript">function iaLoad(){console.log("i" + Date.now())};iaLoad();</script>',
+			'default_width'	=> 640,
+			'default_ratio'	=> 1.77777777777778, // (16 / 9)
+			'https_enabled'	=> true,
+			'url_regex'		=> [
+				'#list=([\d\w-]+)(?:&\S+?)?#is'
+			],
+			'id_regex'		=> [
+				'#^([\d\w-]+)$#is'
+			]
+		],
+
+
 		'youku' => [
 			'embed'			=> '<iframe src="http://player.youku.com/embed/%1$s" width="%2$d" height="%3$d" frameborder="0" allowfullscreen="true"></iframe>',
 			'default_width'	=> 640,
@@ -448,7 +462,7 @@ class VideoService {
 		'vimeo.com'					=> 'vimeo',
 		'vine.co'					=> 'vine',
 		'screen.yahoo.com'			=> 'yahoo',
-		'youtube.com'				=> ['youtube', 'youtubeplaylist'],
+		'youtube.com'				=> ['youtube', 'youtubeplaylist', 'youtubeIA'],
 		'youku.com'					=> 'youku'
 	];
 

@@ -37,7 +37,8 @@
 	"ResourceModules": {
 		"ext.embedVideo": {
 			"scripts": [
-				"js/autoResize.js"
+			    "js/autoResize.js",
+			    "js/loader.js"
 			],
 			"position": "top",
 			"targets": [
