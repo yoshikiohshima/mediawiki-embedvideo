@@ -38,7 +38,7 @@
 		"ext.embedVideo": {
 			"scripts": [
 			    "js/autoResize.js",
-			    "js/loader.js"
+			    "js/subtitles.js"
 			],
 			"position": "top",
 			"targets": [

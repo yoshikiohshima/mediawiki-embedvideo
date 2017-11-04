@@ -142,7 +142,7 @@ class EmbedVideoHooks {
 			$parser->setHook( $service, "EmbedVideoHooks::parseServiceTag{$service}" );
 		}
 
-		$parser->setHook( 'subtitle', "EembedVideoHooks::parseServiceTagcaption" );
+		$parser->setHook( 'subtitle', "EmbedVideoHooks::parseServiceTagsubtitle" );
 
 		return true;
 	}
@@ -159,6 +159,11 @@ class EmbedVideoHooks {
 			$service = str_replace( "parseServiceTag", "", $name );
 			return self::parseServiceTag( $service, $args[0], $args[1], $args[2], $args[3] );
 		}
+	}
+
+	static public function parseServiceTagsubtitle( $input, array $args, Parser $parser, PPFrame $frame ) {
+		$output = $parser->recursiveTagParse($input, $frame);
+		return [ "<div id='subtitles'>$output</div>", 'noparse' => true, 'isHTML' => true ];
 	}
 
 	/**
