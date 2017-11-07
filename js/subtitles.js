@@ -9,22 +9,25 @@ var scroller;   // interval
 var maybeLeft = 0;
 var padding; // DOM
 
+function parseTime(text) {
+    if (/[0-9]+$/.test(text)) {
+	return parseInt(text, 10);
+    } else if ((match = /([0-9]?[0-9]):([0-9]?[0-9])$/.exec(text))) {
+	return match[1] * 60 + match[2];
+    } else if ((match = /([0-9]?[0-9]):([0-9]?[0-9]):([0-9]?[0-9])$/.exec(text))) {
+	return match[1] * 3600 + match[2] * 60 + match[3];
+    }
+    return null;
+}
+
 function processOne(dom) {
     if (dom.nodeType != 1) {
 	return null;
     }
     var text = dom.id;
-    var val;
-    var match;
-    if (/[0-9]+$/.test(text)) {
-	val = parseInt(text, 10);
-    } else if ((match = /([0-9]?[0-9]):([0-9]?[0-9])$/.exec(text))) {
-	val = match[1] * 60 + match[2];
-    } else if ((match = /([0-9]?[0-9]):([0-9]?[0-9]):([0-9]?[0-9])$/.exec(text))) {
-	val = match[1] * 3600 + match[2] * 60 + match[3];
-    }
+    var val = parseTime(text);
 
-    if (!val) {return null;}
+    if (val === null) {return null;}
     return [dom, val];
 }
 
@@ -90,23 +93,15 @@ window.onscroll = function() {
 }
 
 window.subtitleSelected = function(div) {
+    var val = null;
     if (div && div.id) {
 	var text = div.id;
+	val = parseTime(text);
     }
-    
-    if (/[0-9]+$/.test(text)) {
-	val = parseInt(text, 10);
-    } else if ((match = /([0-9]?[0-9]):([0-9]?[0-9])$/.exec(text))) {
-	val = match[1] * 60 + match[2];
-    } else if ((match = /([0-9]?[0-9]):([0-9]?[0-9]):([0-9]?[0-9])$/.exec(text))) {
-	val = match[1] * 3600 + match[2] * 60 + match[3];
-    }
-
-    if (val) {
+    if (val !== null) {
 	player.seekTo(val, true);
     }
 }
-
 
 window.updateEventHighlight = function() {
     if (!events) {
