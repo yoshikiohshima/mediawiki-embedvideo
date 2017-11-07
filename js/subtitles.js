@@ -129,3 +129,10 @@ window.updateEventHighlight = function() {
     smoothScrollTo(event.offsetTop - events[0][0].offsetTop, Date.now(), 300);
     event.classList.add("subtitlehighlight");
 }
+
+//
+function launchEditor() {
+    mw
+}
+
+
