@@ -43,7 +43,7 @@ div.embedvideo.ev_baseline {
 div.embedvideo.ia_out {
     position: fixed;
     top: 0;
-    zIndex = 9999;
+    z-index: 9999;
 }
 
 video.thumbborder, audio.thumbborder {
