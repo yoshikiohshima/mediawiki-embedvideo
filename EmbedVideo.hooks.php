@@ -142,7 +142,8 @@ class EmbedVideoHooks {
 			$parser->setHook( $service, "EmbedVideoHooks::parseServiceTag{$service}" );
 		}
 
-		$parser->setHook( 'subtitle', "EmbedVideoHooks::parseServiceTagsubtitle" );
+		$parser->setHook( 'note',  "EmbedVideoHooks::parseServiceTagnote" );
+		$parser->setHook( 'subtitle',  "EmbedVideoHooks::parseServiceTagsubtitle" );
 
 		return true;
 	}
@@ -162,8 +163,25 @@ class EmbedVideoHooks {
 	}
 
 	static public function parseServiceTagsubtitle( $input, array $args, Parser $parser, PPFrame $frame ) {
+		foreach( $args as $name => $value ) {
+	        	if ($name == "id") {
+				$timecode = $value;
+			}
+		}
+	
 		$output = $parser->recursiveTagParse($input, $frame);
-		return [ "<div id='subtitles'>$output</div>", 'noparse' => true, 'isHTML' => true ];
+		return [ "<div class='subtitle' id='$timecode' onclick='window.subtitleSelected(this)'>$output</div>", 'noparse' => true, 'isHTML' => true ];
+	}
+
+
+	static public function parseServiceTagnote( $input, array $args, Parser $parser, PPFrame $frame ) {
+		foreach( $args as $name => $value ) {
+	        	if ($name == "for") {
+				$timecode = $value;
+			}
+		}
+		$output = $parser->recursiveTagParse($input, $frame);
+		return [ "<label for='$timecode' class='margin-toggle'>&#8853;</label><span class='marginnote'>(time: $timecode) $output</span><input type='checkbox' id='$timecode' class='margin-toggle'/>", 'noparse' => true, 'isHTML' => true ];
 	}
 
 	/**
