@@ -8,6 +8,7 @@ var scroller;   // interval
 
 var maybeLeft = 0;
 var padding; // DOM
+var embedvideo; // DOM
 
 function parseTime(text) {
     if (/[0-9]+$/.test(text)) {
@@ -74,25 +75,24 @@ function smoothScrollTo(top, start, duration) {
 }
 
 window.onscroll = function() {
-    var scrollPosition, headerOffset, isScrolling;
-    var rect = document.getElementById("firstHeading").getBoundingClientRect();
-    headerOffset = rect.top + rect.height;
-    isScrolling = headerOffset < 0;
-    var div = document.getElementsByClassName('embedvideo')[0];
-    if (!div) {return;}
+    if (!embedvideo) {return;}
     if (!padding) {return;}
-    if (isScrolling) {
-	div.classList.add("ia_out");
-	div.style.left = maybeLeft + 'px'; //??? adjust border
-	padding.style.height = div.getBoundingClientRect().height + "px";
+
+    var scrollPosition, headerOffset, isScrolling;
+    var previewnote = document.getElementsByClassName("previewnote")[0];
+    if (previewnote) {
+	headerOffset = previewnote.getBoundingClientRect().bottom +
+	    parseFloat(window.getComputedStyle(previewnote)["margin-bottom"]);
     } else {
-	maybeLeft = div.firstElementChild.getBoundingClientRect().x;
-	div.classList.remove('ia_out');
-	padding.style.height = '0px';
+	var heading = document.getElementById("firstHeading");
+	var rect = heading.getBoundingClientRect();
+	headerOffset = rect.top + rect.height + parseFloat(window.getComputedStyle(heading)["margin-bottom"]);
     }
+    embedvideo.style.top = (headerOffset >  0 ? headerOffset : 0) + 'px';
 }
 
 window.subtitleSelected = function(div) {
+    if (mw.config.get("wgAction") !== "view") {return;}
     var val = null;
     if (div && div.id) {
 	var text = div.id;
@@ -106,9 +106,18 @@ window.subtitleSelected = function(div) {
 window.updateEventHighlight = function() {
     if (!events) {
 	var subtitles = document.getElementsByClassName("subtitle");
-	var embedvideo = document.getElementsByClassName("embedvideo")[0];
+	embedvideo = document.getElementsByClassName("embedvideo")[0];
+
+	var previewnote = document.getElementsByClassName("previewnote")[0];
+	if (previewnote) {
+	    var top = previewnote.getBoundingClientRect().bottom +
+		parseFloat(window.getComputedStyle(previewnote)["margin-bottom"]);
+	} else {
+	    var top = document.getElementById("bodyContent").getBoundingClientRect().top;
+	}
+	embedvideo.style.top = top + 'px';
 	padding = document.createElement("div");
-	padding.style.height = 0;
+	padding.style.height = embedvideo.getBoundingClientRect().height + "px";
 	embedvideo.parentNode.insertBefore(padding, embedvideo.nextElementSibling);
         events = process(subtitles);
     }
@@ -117,10 +126,13 @@ window.updateEventHighlight = function() {
     Array.from(document.getElementsByClassName('subtitlehighlight')).forEach(function (div) {
         div.classList.remove('subtitlehighlight');
     });
+
+    if (!player.getCurrentTime) {return;}
     
     var time = parseFloat(player.getCurrentTime());
     var event = findEvent(time, events);
     if (!event) {return;}
+    if (mw.config.get("wgAction") !== "view") {return;}
     smoothScrollTo(event.offsetTop - events[0][0].offsetTop, Date.now(), 300);
     event.classList.add("subtitlehighlight");
 }

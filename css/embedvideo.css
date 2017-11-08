@@ -40,7 +40,7 @@ div.embedvideo.ev_baseline {
 	vertical-align: baseline;
 }
 
-div.embedvideo.ia_out {
+div.embedvideo {
     position: fixed;
     top: 0;
     z-index: 9999;
