@@ -403,7 +403,7 @@ class VideoService {
 			]
 		],
 		'youtubeIA' => [
-			'embed'			=> '<script type="text/javascript">var interval;var player;console.log("%1$s");function onPlayerStateChange(e) {if (e.data == YT.PlayerState.PLAYING) {interval = window.setInterval(updateEventHighlight, 500); }; if (e.data == YT.PlayerState.ENDED || e.data == YT.PlayerState.PAUSED || e.data == YT.PlayerState.BUFFERING) { window.clearInterval(interval);}};function onYouTubeIframeAPIReady() {player = new YT.Player("ia-video", {height: %3$d, width:  %2$d, videoId: "%1$s", events: { "onStateChange": onPlayerStateChange }, playerVars: {rel: 0, showinfo: 0},}); updateEventHighlight(); }</script><div id="ia-holder"><div id="ia-video"></div><div id="ia-caption"></div></div><script type="text/javascript">function iaLoad(){console.log("i" + Date.now())};iaLoad();</script>',
+			'embed'			=> '<script type="text/javascript">var interval;var player;console.log("%1$s");function onPlayerStateChange(e) {if (e.data == YT.PlayerState.PLAYING) {interval = window.setInterval(updateEventHighlight, 500); }; if (e.data == YT.PlayerState.ENDED || e.data == YT.PlayerState.PAUSED || e.data == YT.PlayerState.BUFFERING) { window.clearInterval(interval);}};function onYouTubeIframeAPIReady() {player = new YT.Player("ia-video", {height: %3$d, width:  %2$d, videoId: "%1$s", events: { "onStateChange": onPlayerStateChange }, playerVars: {rel: 0, showinfo: 0},}); updateEventHighlight(); }</script><div id="ia-video"></div>',
 			'default_width'	=> 640,
 			'default_ratio'	=> 1.77777777777778, // (16 / 9)
 			'https_enabled'	=> true,
