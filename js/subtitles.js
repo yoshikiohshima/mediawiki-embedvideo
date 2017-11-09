@@ -137,9 +137,3 @@ window.updateEventHighlight = function() {
     event.classList.add("subtitlehighlight");
 }
 
-//
-function launchEditor() {
-    mw
-}
-
-

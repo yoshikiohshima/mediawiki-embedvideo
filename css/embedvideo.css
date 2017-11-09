@@ -44,6 +44,10 @@ div.embedvideo {
     position: fixed;
     top: 0;
     z-index: 9999;
+    background-color: #dad8d8;
+    border-color: #dad8d8;
+    border-width: 4px;
+    border-style: #dad8d8;
 }
 
 video.thumbborder, audio.thumbborder {
