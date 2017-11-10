@@ -11,12 +11,16 @@ var padding; // DOM
 var embedvideo; // DOM
 
 function parseTime(text) {
+    var match = /([0-9]?[0-9]):([0-9]?[0-9]):([0-9]?[0-9])$/.exec(text);
+    if (match) {
+	return parseInt(match[1], 10) * 3600 + parseInt(match[2], 10) * 60 + parseInt(match[3]);
+    }
+    match = /([0-9]?[0-9]):([0-9]?[0-9])$/.exec(text);
+    if (match) {
+	return parseInt(match[1], 10) * 60 + parseInt(match[2], 10);
+    }
     if (/[0-9]+$/.test(text)) {
 	return parseInt(text, 10);
-    } else if ((match = /([0-9]?[0-9]):([0-9]?[0-9])$/.exec(text))) {
-	return match[1] * 60 + match[2];
-    } else if ((match = /([0-9]?[0-9]):([0-9]?[0-9]):([0-9]?[0-9])$/.exec(text))) {
-	return match[1] * 3600 + match[2] * 60 + match[3];
     }
     return null;
 }

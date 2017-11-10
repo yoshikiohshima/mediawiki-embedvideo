@@ -11,8 +11,8 @@
 	var str = document.getElementById("wpTextbox1").textContent;
 	if (!str) {return;}
 	var exp = /#evt:\nservice=youtubeIA\n\|id=([^ \n\t]+)/m;
-	var match;
-	if (str && (match = exp.exec(str))) {
+	var match = exp.exec(str);
+	if (str && match) {
 		var dom = document.createElement("div");
 		dom.id = "ia-video";
 		var body = document.getElementById("bodyContent");
@@ -84,7 +84,10 @@
 		    var h = Math.floor(time / (60 * 60));
 		    var m = Math.floor((time - (h * 60 * 60)) / 60);
 		    var s = Math.floor(time % 60);
-		    var subtitle = `<subtitle id="${h}:${m}:${s}">${matched}</subtitle>\n`;
+		    var subtitle = '<subtitle id=';
+		    subtitle += '"' + h + ':' + m + ':' + s + '">';
+		    subtitle += matched;
+		    subtitle += '</subtitle>\n';
 		    extractResult.push(subtitle);
 		    console.log(subtitle);
 		   // window.document.getElementById("wpTextbox1").value += subtitle;
