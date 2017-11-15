@@ -6,6 +6,8 @@ firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 var events;  // [[<the next node> ,time]]
 var scroller;   // interval
 
+var highlightedEvent; // DOM
+
 var maybeLeft = 0;
 var padding; // DOM
 var embedvideo; // DOM
@@ -49,7 +51,9 @@ function process(subtitles) {
 }
 
 function findEvent(time, events) {
-    if (events.length == 1) {return events[0][0];}
+    if (!events) {return null;}
+    if (events.length === 0) {return null};
+    if (events.length === 1) {return events[0][0];}
 
     for (var i = 0; i < events.length - 1; i++) {
         var pair = events[i];
@@ -103,7 +107,14 @@ window.subtitleSelected = function(div) {
 	val = parseTime(text);
     }
     if (val !== null) {
-	player.seekTo(val, true);
+	if (player.seekTo) {//YouTube Player
+	    player.seekTo(val, true);
+	}
+	if (player.setCurrentTime) {//Vimeo Player
+	    player.setCurrentTime(val).then(function(seconds) {
+		player.play();
+	    });
+	}
     }
 }
 
@@ -127,17 +138,28 @@ window.updateEventHighlight = function() {
     }
     if (!events) {return;}
 
-    Array.from(document.getElementsByClassName('subtitlehighlight')).forEach(function (div) {
-        div.classList.remove('subtitlehighlight');
-    });
-
     if (!player.getCurrentTime) {return;}
-    
-    var time = parseFloat(player.getCurrentTime());
-    var event = findEvent(time, events);
-    if (!event) {return;}
-    if (mw.config.get("wgAction") !== "view") {return;}
-    smoothScrollTo(event.offsetTop - events[0][0].offsetTop, Date.now(), 300);
-    event.classList.add("subtitlehighlight");
+
+    var time = player.getCurrentTime();
+
+    function callback(time) {
+	var event = findEvent(time, events);
+	if (!event) {return;}
+	if (mw.config.get("wgAction") !== "view") {return;}
+	if (highlightedEvent === event) {return;}
+
+	smoothScrollTo(event.offsetTop - events[0][0].offsetTop, Date.now(), 300);
+	Array.from(document.getElementsByClassName('subtitlehighlight')).forEach(function (div) {
+            div.classList.remove('subtitlehighlight');
+	});
+	event.classList.add("subtitlehighlight");
+    }
+    if (typeof time === "string") {
+	callback(parseFloat(time));
+    } else if (typeof time === "number") {
+	callback(time);
+    } else { // must be promise for vimeo player
+	time.then(callback);
+    }
 }
 

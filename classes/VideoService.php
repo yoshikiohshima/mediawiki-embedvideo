@@ -349,6 +349,21 @@ class VideoService {
 			],
 			'oembed'		=> '%4$s//vimeo.com/api/oembed.json?url=%1$s&width=%2$d&maxwidth=%2$d'
 		],
+		'vimeoIA' => [
+			'embed'			=> '<div id="ia-video"></div><script src="//player.vimeo.com/api/player.js"></script><script>var options = {id: %1$s, width: "%2$d", loop: false}; var interval; var player = new Vimeo.Player("ia-video", options); player.on("play", function() {interval = window.setInterval(updateEventHighlight, 500);}); player.on("pause", function() {window.clearInterval(interval);}); player.on("ended", function() {window.clearInterval(interval)});</script>',
+
+			'default_width'	=> 640,
+			'default_ratio' => 1.77777777777778, // (640 / 360)
+			'https_enabled'	=> true,
+			'url_regex'		=> [
+				'#vimeo\.com/([\d]+)#is',
+				'#vimeo\.com/channels/[\d\w-]+/([\d]+)#is'
+			],
+			'id_regex'		=> [
+				'#^([\d]+)$#is'
+			],
+			'oembed'		=> '%4$s//vimeo.com/api/oembed.json?url=%1$s&width=%2$d&maxwidth=%2$d'
+		],
 		'vine' => [
 			'embed'			=> '<iframe src="//vine.co/v/%1$s/embed/simple" width="%2$d" height="%3$d" frameborder="0"></iframe>',
 			'default_width'	=> 640,
@@ -459,7 +474,7 @@ class VideoService {
 		'tvpot.daum.net'			=> 'tvpot',
 		'twitch.tv'					=> ['twitch', 'twitchvod'],
 		'89.160.51.62'				=> 'videomaten',
-		'vimeo.com'					=> 'vimeo',
+		'vimeo.com'					=> ['vimeo', 'vimeoIA'],
 		'vine.co'					=> 'vine',
 		'screen.yahoo.com'			=> 'yahoo',
 		'youtube.com'				=> ['youtube', 'youtubeplaylist', 'youtubeIA'],
