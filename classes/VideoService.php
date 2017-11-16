@@ -350,7 +350,7 @@ class VideoService {
 			'oembed'		=> '%4$s//vimeo.com/api/oembed.json?url=%1$s&width=%2$d&maxwidth=%2$d'
 		],
 		'vimeoIA' => [
-			'embed'			=> '<div id="ia-video"></div><script src="//player.vimeo.com/api/player.js"></script><script>var options = {id: %1$s, width: "%2$d", loop: false}; var interval; var player = new Vimeo.Player("ia-video", options); player.on("play", function() {interval = window.setInterval(updateEventHighlight, 500);}); player.on("pause", function() {window.clearInterval(interval);}); player.on("ended", function() {window.clearInterval(interval)});</script>',
+			'embed'			=> '<div id="ia-video"></div><script src="//player.vimeo.com/api/player.js"></script><script>var options = {id: %1$s, width: "%2$d", loop: false}; var interval; var player = new Vimeo.Player("ia-video", options);	player.on("play", function() {interval = window.setInterval(updateEventHighlight, 500);}); player.on("pause", function() {window.clearInterval(interval);}); player.on("ended", function() {window.clearInterval(interval)});</script>',
 
 			'default_width'	=> 640,
 			'default_ratio' => 1.77777777777778, // (640 / 360)

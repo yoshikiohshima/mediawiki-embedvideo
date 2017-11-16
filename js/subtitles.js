@@ -120,6 +120,7 @@ window.subtitleSelected = function(div) {
 
 window.updateEventHighlight = function() {
     if (!events) {
+
 	var subtitles = document.getElementsByClassName("subtitle");
 	embedvideo = document.getElementsByClassName("embedvideo")[0];
 
@@ -163,3 +164,6 @@ window.updateEventHighlight = function() {
     }
 }
 
+if (player) {
+    updateEventHighlight();
+}
