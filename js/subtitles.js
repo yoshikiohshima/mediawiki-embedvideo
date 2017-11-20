@@ -161,8 +161,10 @@ window.updateEventHighlight = function() {
     function callback(time) {
 	var event = findEvent(time, events);
 	if (event && mw.config.get("wgAction") == "view" && highlightedEvent !== event) {
-	    smoothScrollTo(event.offsetTop - events[0][0].offsetTop, Date.now(), 300);
-	    Array.from(document.getElementsByClassName('subtitlehighlight')).forEach(function (div) {
+	    ;
+	    smoothScrollTo(event.offsetTop - embedvideo.getBoundingClientRect().bottom, Date.now(), 300);
+	    events.forEach(function (pair) {
+		var div = pair[0];
 		div.classList.remove('subtitlehighlight');
 	    });
 	    event.classList.add("subtitlehighlight");
