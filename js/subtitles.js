@@ -3,16 +3,24 @@ tag.src = 'https://www.youtube.com/iframe_api';
 var firstScriptTag = document.getElementsByTagName('script')[0];
 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-var events;  // [[<the next node> ,time]]
+var events;  // [[DOM, time]]
+var slides;  // [[DOM, time]]
 var scroller;   // interval
 
-var highlightedEvent; // DOM
+var slideview; // DOM
 
-var maybeLeft = 0;
+var highlightedEvent; // DOM
+var highlightedSlide; // DOM
+
 var padding; // DOM
 var embedvideo; // DOM
 
 function parseTime(text) {
+    if (text.startsWith("sub")) {
+	text = text.slice(3);
+    } else if (text.startsWith("slide")) {
+	text = text.slice(5);
+    }
     var match = /([0-9]?[0-9]):([0-9]?[0-9]):([0-9]?[0-9])$/.exec(text);
     if (match) {
 	return parseInt(match[1], 10) * 3600 + parseInt(match[2], 10) * 60 + parseInt(match[3]);
@@ -38,10 +46,10 @@ function processOne(dom) {
     return [dom, val];
 }
 
-function process(subtitles) {
+function process(list) {
     var result = [];
-    for (var i = 0; i < subtitles.length; i++) {
-	var node = subtitles[i];
+    for (var i = 0; i < list.length; i++) {
+	var node = list[i];
 	var val = processOne(node);
 	if (val) {
 	    result.push(val);
@@ -97,6 +105,10 @@ window.onscroll = function() {
 	headerOffset = rect.top + rect.height + parseFloat(window.getComputedStyle(heading)["margin-bottom"]);
     }
     embedvideo.style.top = (headerOffset >  0 ? headerOffset : 0) + 'px';
+    if (slideview) {
+	slideview.style.top = (headerOffset >  0 ? headerOffset : 0) + 'px';
+	slideview.style.left = embedvideo.getBoundingClientRect().right + 'px';
+    }
 }
 
 window.subtitleSelected = function(div) {
@@ -106,7 +118,7 @@ window.subtitleSelected = function(div) {
 	var text = div.id;
 	val = parseTime(text);
     }
-    if (val !== null) {
+    if (val !== null && player) {
 	if (player.seekTo) {//YouTube Player
 	    player.seekTo(val, true);
 	}
@@ -120,8 +132,8 @@ window.subtitleSelected = function(div) {
 
 window.updateEventHighlight = function() {
     if (!events) {
-
 	var subtitles = document.getElementsByClassName("subtitle");
+	var slideItems = document.getElementsByClassName("slideitem");
 	embedvideo = document.getElementsByClassName("embedvideo")[0];
 
 	var previewnote = document.getElementsByClassName("previewnote")[0];
@@ -136,6 +148,9 @@ window.updateEventHighlight = function() {
 	padding.style.height = embedvideo.getBoundingClientRect().height + "px";
 	embedvideo.parentNode.insertBefore(padding, embedvideo.nextElementSibling);
         events = process(subtitles);
+	slides = process(slideItems);
+
+	slideview = document.getElementById("slideview");
     }
     if (!events) {return;}
 
@@ -145,15 +160,39 @@ window.updateEventHighlight = function() {
 
     function callback(time) {
 	var event = findEvent(time, events);
-	if (!event) {return;}
-	if (mw.config.get("wgAction") !== "view") {return;}
-	if (highlightedEvent === event) {return;}
+	if (event && mw.config.get("wgAction") == "view" && highlightedEvent !== event) {
+	    smoothScrollTo(event.offsetTop - events[0][0].offsetTop, Date.now(), 300);
+	    Array.from(document.getElementsByClassName('subtitlehighlight')).forEach(function (div) {
+		div.classList.remove('subtitlehighlight');
+	    });
+	    event.classList.add("subtitlehighlight");
+	}
+	var slide = findEvent(time, slides);
 
-	smoothScrollTo(event.offsetTop - events[0][0].offsetTop, Date.now(), 300);
-	Array.from(document.getElementsByClassName('subtitlehighlight')).forEach(function (div) {
-            div.classList.remove('subtitlehighlight');
-	});
-	event.classList.add("subtitlehighlight");
+	if (slide && mw.config.get("wgAction") == "view") { // && highlightedSlide !== slide)
+	    if (slideview) {
+		var cxt = slideview.getContext('2d');
+		var s = slide.firstChild;
+		if (s && s.tagName == "IMG") {
+		    var ws = slideview.width / s.width;
+		    var vs = slideview.height / s.height;
+		    if (ws < vs) { // too wide, pad top and bottom
+			var scale = ws;
+			var tx = 0;
+			var ty = (slideview.height / scale - s.height) / 2.0;
+		    } else { // too high, pad left and right
+			var scale = vs;
+			var ty = 0;
+			var tx = (slideview.width / scale -  s.width) / 2.0;
+		    }
+
+		    cxt.resetTransform();
+		    cxt.clearRect(0, 0, slideview.width, slideview.height);
+		    cxt.scale(scale, scale);
+		    cxt.drawImage(s, tx, ty);
+		}
+	    };
+	}
     }
     if (typeof time === "string") {
 	callback(parseFloat(time));

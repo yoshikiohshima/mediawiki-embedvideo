@@ -144,6 +144,9 @@ class EmbedVideoHooks {
 
 		$parser->setHook( 'note',  "EmbedVideoHooks::parseServiceTagnote" );
 		$parser->setHook( 'subtitle',  "EmbedVideoHooks::parseServiceTagsubtitle" );
+		$parser->setHook( 'slidelist',  "EmbedVideoHooks::parseServiceTagslidelist" );
+		$parser->setHook( 'slide',  "EmbedVideoHooks::parseServiceTagslide" );
+		$parser->setHook( 'slideview', "EmbedVideoHooks::parseServiceTagslideview" );
 
 		return true;
 	}
@@ -170,9 +173,8 @@ class EmbedVideoHooks {
 		}
 	
 		$output = $parser->recursiveTagParse($input, $frame);
-		return [ "<div class='subtitle' id='$timecode' onclick='window.subtitleSelected(this)'>$output</div>", 'noparse' => true, 'isHTML' => true ];
+		return [ "<div class='subtitle' id='sub$timecode' onclick='window.subtitleSelected(this)'>$output</div>", 'noparse' => true, 'isHTML' => true ];
 	}
-
 
 	static public function parseServiceTagnote( $input, array $args, Parser $parser, PPFrame $frame ) {
 		foreach( $args as $name => $value ) {
@@ -181,8 +183,47 @@ class EmbedVideoHooks {
 			}
 		}
 		$output = $parser->recursiveTagParse($input, $frame);
-		return [ "<label for='$timecode' class='margin-toggle'>&#8853;</label><span class='marginnote'>(time: $timecode) $output</span><input type='checkbox' id='$timecode' class='margin-toggle'/>", 'noparse' => true, 'isHTML' => true ];
+		$result = "<div class='marginnote'><label for='$timecode' class='margin-toggle'>&#8853;</label><span>(time: $timecode) $output</span><input type='checkbox' id='$timecode' class='margin-toggle'/></div>";
+		//echo "<script>console.log($output)</script>";
+		return [ $result, 'noparse' => true, 'isHTML' => true ];
+		//return $parser->insertStripItem( $result, $parser->mStripState );
 	}
+
+	static public function parseServiceTagslidelist( $input, array $args, Parser $parser, PPFrame $frame ) {
+		global $wgArticlePath;
+		global $wgServer;
+		$output = $parser->recursiveTagParse($input, $frame);
+		//$list = array_filter(explode("\n", $input));
+		$result = "<span class='marginslide'>(slides)<ul>";
+		$result .= $output;
+		$result .= "</ul></span>";
+
+		return [ $result, 'noparse' => true, 'isHTML' => true ];
+//		return  $parser->insertStripItem( $result, $parser->mStripState );
+	}
+
+	static public function parseServiceTagslide( $input, array $args, Parser $parser, PPFrame $frame ) {
+		global $wgArticlePath;
+		global $wgServer;
+
+		foreach( $args as $name => $value ) {
+	        	if ($name == "for") {
+				$timecode = $value;
+			}
+			if ($name == "name") {
+				$slideName = $value;
+			}
+		}
+
+		$path = $wgServer . str_replace('$1', "Special:Filepath/$slideName", $wgArticlePath);
+		$result .= "<li hidden='true' class='slideitem' id='slide$timecode'><img class='slideimage' src='$path'/></li>";
+		return [ $result, 'noparse' => true, 'isHTML' => true ];
+	}
+
+	static public function parseServiceTagslideview( $input, array $args, Parser $parser, PPFrame $frame ) {
+		return [ '<canvas width="1024" height="768" id="slideview"/>', 'noparse' => true, 'isHTML' => true ];
+	}
+
 
 	/**
 	 * Parse tag with service name
