@@ -7,7 +7,8 @@
         var autoResizerDelta = 200;
 
         $(window).resize(function() {
-			autoResizerRTime = new Date();
+
+	    autoResizerRTime = new Date();
             if (autoResizerTimeout === false) {
                 autoResizerTimeout = true;
                 setTimeout(autoResizerResizeEnd, autoResizerDelta);
@@ -38,6 +39,8 @@
             $('.autoResize').each(function(){
                 var parent = $(this).parent();
                 var self = $(this);
+		console.log("self:", self);
+
                 var iframe = self.find('iframe');
                 var wrap = self.find('.embedvideowrap');
 

@@ -216,7 +216,7 @@ class EmbedVideoHooks {
 		}
 
 		$path = $wgServer . str_replace('$1', "Special:Filepath/$slideName", $wgArticlePath);
-		$result .= "<li hidden='true' class='slideitem' id='slide$timecode'><img class='slideimage' src='$path'/></li>";
+		$result .= "<div id='$path'><img id='slide$timecode' class='slideimage'/></div>";
 		return [ $result, 'noparse' => true, 'isHTML' => true ];
 	}
 
