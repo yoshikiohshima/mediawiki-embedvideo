@@ -134,7 +134,7 @@ function findEventIndex(time, events) {
         return events.length - 1;
     }
     if (time < events[0][1]) {
-	return events[0][1];
+	return 0;
     }
     return -1;
 }
@@ -237,7 +237,6 @@ window.updateEventHighlight = function() {
     function callback(time) {
 	var event = findEvent(time, events);
 	if (event && mw.config.get("wgAction") == "view" && highlightedEvent !== event) {
-	    ;
 	    smoothScrollTo(event.offsetTop - embedvideo.getBoundingClientRect().bottom, Date.now(), 300);
 	    events.forEach(function (pair) {
 		var div = pair[0];
