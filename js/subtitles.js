@@ -21,7 +21,7 @@ var loadInterval;
 var lastTime = 0;
 
 function delayLoad(time, slides) {
-    if (!slides) {return;}
+    if (!slides || slides.length === 0) {return;}
     if (loader) {return;}
 
     function load(dom) {
@@ -53,7 +53,6 @@ function delayLoad(time, slides) {
 	}
 	return;
     }
-
     var val = load(slides[0][0]);
     if (val) {return;}
 

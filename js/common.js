@@ -36,10 +36,10 @@
 	// called video (i.e., evaluate "var video = $0" from console)
  	// Then run initExtractor() from console to accumulate the text into extractResult
 
+	var video;
 	var extractResult = [""];  // always trimmed
 	var extractInterval;
  	var last200 = "";
-
 	function extractStep() {
 		function findCaption(video) {
 		    var parent = video.parentNode.parentNode;
