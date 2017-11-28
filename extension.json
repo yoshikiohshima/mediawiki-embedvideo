@@ -15,6 +15,9 @@
 	"MessagesDirs": {
 		"EmbedVideo": [
 			"i18n"
+		],
+		"ConvertSubtitle": [
+			"i18n"
 		]
 	},
 	"ExtensionMessagesFiles": {
@@ -29,7 +32,8 @@
 		"EmbedVideo\\AudioHandler": "classes/media/AudioHandler.php",
 		"EmbedVideo\\AudioTransformOutput": "classes/media/AudioTransformOutput.php",
 		"EmbedVideo\\VideoHandler": "classes/media/VideoHandler.php",
-		"EmbedVideo\\VideoTransformOutput": "classes/media/VideoTransformOutput.php"
+		"EmbedVideo\\VideoTransformOutput": "classes/media/VideoTransformOutput.php",
+		"SpecialConvertSubtitle": "SpecialConvertSubtitle_body.php"
 	},
 	"APIModules": {
         "embedvideo": "ApiEmbedVideo"
@@ -81,6 +85,9 @@
 		"ParserFirstCallInit": [
 			"EmbedVideoHooks::onParserFirstCallInit"
 		]
+	},
+	"SpecialPages": {
+		"ConvertSubtitle": "SpecialConvertSubtitle"
 	},
 	"manifest_version": 1
 }
