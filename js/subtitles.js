@@ -18,6 +18,8 @@ var embedvideo; // DOM
 var loader;  //DOM, that is currently loading image
 var loadInterval;
 
+var lastTime = 0;
+
 function delayLoad(time, slides) {
     if (!slides) {return;}
     if (loader) {return;}
@@ -26,7 +28,6 @@ function delayLoad(time, slides) {
 	var parent = dom.parentNode;
 	if (parent.id) {
 	    if (!dom.src || dom.src === "") {
-		console.log("set", parent.id);
 		dom.src = parent.id;
 		dom.alt = parent.id;
 		loader = dom;
@@ -38,9 +39,10 @@ function delayLoad(time, slides) {
 		    console.log("failed: " + dom.src);
 		    loader = null;
 		}
-		return;
+		return true;
 	    }
 	}
+	return false;
     }
 
     var previewnote = document.getElementsByClassName("previewnote")[0];
@@ -52,19 +54,21 @@ function delayLoad(time, slides) {
 	return;
     }
 
+    var val = load(slides[0][0]);
+    if (val) {return;}
+
     var ind = findEventIndex(time, slides);
     var i = ind;
-    if (i === 0) {
-	load(slides[0][0]);
-	return;
-    }
     while (i < slides.length) {
 	if (i >= slides.length) {return;}
 	var dom = slides[i][0];
 	var slideTime = slides[i][1];
-	if (slideTime > time + 20) {return;}
+	//if (slideTime > time + 20) {return;}
 	if (dom) {
-	    load(dom);
+	    var val = load(dom);
+	    if (val) {
+		return;
+	    }
 	}
 	i++;
     }
@@ -218,15 +222,16 @@ window.updateEventHighlight = function() {
 
 	window.onscroll();
 
+	function loaderFunc() {
+	    delayLoad(lastTime - 10, slides);
+	}
+	if (!loadInterval) {
+	    console.log("start delay load");
+	    loadInterval = setInterval(loaderFunc, 2000);
+	}
     }
 
     var time = !player.getCurrentTime ? 0 : player.getCurrentTime();
-    function loaderFunc() {
-	delayLoad(time - 10, slides);
-    }
-    if (!loadInterval) {
-	loadInterval = setInterval(loaderFunc, 1000);
-    }
     if (!events) {return;}
 
     function callback(time) {
@@ -269,11 +274,16 @@ window.updateEventHighlight = function() {
 	}
     }
     if (typeof time === "string") {
-	callback(parseFloat(time));
+	lastTime = parseFloat(time);
+	callback(lastTime);
     } else if (typeof time === "number") {
-	callback(time);
+	lastTime = time;
+	callback(lastTime);
     } else { // must be promise for vimeo player
-	time.then(callback);
+	time.then(function(t) {
+	    lastTime = t;
+	    callback(t);
+	});
     }
 }
 
