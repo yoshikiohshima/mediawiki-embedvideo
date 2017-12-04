@@ -73,6 +73,7 @@ class SpecialConvertSubtitle extends SpecialPage {
 			$result = "";
 			$current = "";
 			$currentTime = 0;
+			$currentTimeStr = "00:00:00";
 
 			for ($i = 0; $i < count($lines); $i += 4) {
 			    $ind = $lines[$i];
@@ -88,8 +89,9 @@ class SpecialConvertSubtitle extends SpecialPage {
 				
 				if ($startTime > $currentTime + 3) {
 					$timeStr = "$matches[1]:$matches[2]:$matches[3]";
-					$result .= "&lt;subtitle id='$timeStr'&gt;$current&lt;/subtitle&gt;<br>";
+					$result .= "&lt;subtitle id='$currentTimeStr'&gt;$current&lt;/subtitle&gt;<br>";
 					$currentTime = $startTime;
+					$currentTimeStr = $timeStr;
 					$current = $caption;
 				} else {
 				        $current .= ' ' . $caption;
