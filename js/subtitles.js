@@ -20,6 +20,66 @@ var loadInterval;
 
 var lastTime = 0;
 
+var $ = jQuery;
+var autoResizerTimeout = false;
+var autoResizerDelta = 200;
+var lastResize = -9999;
+
+$(window).resize(function() {
+    if (new Date() - lastResize > autoResizerDelta && autoResizerTimeout === false) {
+        autoResizerTimeout = true;
+        setTimeout(autoResizerResizeEnd, autoResizerDelta);
+    }
+});
+
+function autoResizerResizeEnd() {
+    autoResizerTimeout = false;
+    autoResizer();
+}
+
+function autoResizer() {
+    $('.autoResize').each(function(){
+        var parent = $(this).parent();
+        var self = $(this);
+        var iframe = self.find('iframe');
+        var wrap = self.find('.embedvideowrap');
+	var slideview = $('#slideview');
+        resizeHandler(self, iframe, parent, wrap, slideview);
+    });
+}
+
+function resizeHandler(self, iframe, parent, wrap, slideview) {
+    var aspect = iframe.attr("data-orig-ratio");
+    if (aspect === undefined) {
+	aspect = iframe.width() / iframe.height();
+        iframe.attr("data-orig-ratio", aspect);
+    }
+
+    var newWidth = parent.width() * 0.55;
+    var newHeight = newWidth / aspect;
+
+    self.width(newWidth).css('width', newWidth);
+    iframe.width(newWidth).css('width', newWidth).attr('width', newWidth);
+    iframe.height(newHeight).css('height', newHeight).attr('height', newHeight);
+    wrap.width(newWidth).css('width', newWidth).attr('width', newWidth);
+    wrap.height(newHeight).css('height', newHeight).attr('height', newHeight);
+
+    if (!slideview) {return;}
+    var aspect = slideview.attr("data-orig-ratio");
+    if (aspect === undefined) {
+	aspect = slideview.width() / slideview.height();
+        slideview.attr("data-orig-ratio", aspect);
+    }
+
+    var newWidth = parent.width() * 0.40;
+    var newHeight = newWidth / aspect;
+
+    slideview.width(newWidth).css('width', newWidth).attr('width', newWidth);
+    slideview.height(newHeight).css('height', newHeight).attr('height', newHeight);
+
+    window.onscroll();
+}
+
 function delayLoad(time, slides) {
     if (!slides || slides.length === 0) {return;}
     if (loader) {return;}
@@ -32,7 +92,7 @@ function delayLoad(time, slides) {
 		dom.alt = parent.id;
 		loader = dom;
 		dom.onload = function() {
-		    console.log("loaded: " + dom.src);
+//		    console.log("loaded: " + dom.src);
 		    loader = null;
 		}
 		dom.onerror = function() {
@@ -220,6 +280,7 @@ window.updateEventHighlight = function() {
 	slideview = document.getElementById("slideview");
 
 	window.onscroll();
+	autoResizer();
 
 	function loaderFunc() {
 	    delayLoad(lastTime - 10, slides);

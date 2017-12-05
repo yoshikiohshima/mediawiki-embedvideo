@@ -147,7 +147,6 @@ class EmbedVideoHooks {
 		$parser->setHook( 'slidelist',  "EmbedVideoHooks::parseServiceTagslidelist" );
 		$parser->setHook( 'slide',  "EmbedVideoHooks::parseServiceTagslide" );
 		$parser->setHook( 'slideview', "EmbedVideoHooks::parseServiceTagslideview" );
-
 		return true;
 	}
 

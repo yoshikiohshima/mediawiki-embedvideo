@@ -2,6 +2,7 @@
 	"name": "EmbedVideo",
 	"version": "2.7.0",
 	"author": [
+		"Yoshiki Ohshima",
 		"Jim R. Wilson",
 		"Andrew Whitworth",
 		"Alexia E. Smith",
@@ -41,7 +42,6 @@
 	"ResourceModules": {
 		"ext.embedVideo": {
 			"scripts": [
-			    "js/autoResize.js",
 			    "js/subtitles.js"
 			],
 			"position": "top",
