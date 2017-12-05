@@ -289,6 +289,12 @@ window.updateEventHighlight = function() {
 	    console.log("start delay load");
 	    loadInterval = setInterval(loaderFunc, 2000);
 	}
+
+	if (slideview) {
+	    var ctx = slideview.getContext('2d');
+	    ctx.fillStyle = 'white';
+	    ctx.fillRect(0, 0, slideview.width, slideview.height);
+	}
     }
 
     var time = !player.getCurrentTime ? 0 : player.getCurrentTime();
@@ -310,7 +316,7 @@ window.updateEventHighlight = function() {
 
 	if (slide && mw.config.get("wgAction") == "view") { // && highlightedSlide !== slide)
 	    if (slideview) {
-		var cxt = slideview.getContext('2d');
+		var ctx = slideview.getContext('2d');
 		if (slide && slide.tagName == "IMG") {
 		    var ws = slideview.width / slide.naturalWidth;
 		    var vs = slideview.height / slide.naturalHeight;
@@ -324,10 +330,10 @@ window.updateEventHighlight = function() {
 			var tx = (slideview.width / scale -  slide.naturalWidth) / 2.0;
 		    }
 
-		    cxt.resetTransform();
-		    cxt.clearRect(0, 0, slideview.width, slideview.height);
-		    cxt.scale(scale, scale);
-		    cxt.drawImage(slide, tx, ty);
+		    ctx.resetTransform();
+		    ctx.fillRect(0, 0, slideview.width, slideview.height);
+		    ctx.scale(scale, scale);
+		    ctx.drawImage(slide, tx, ty);
 		}
 	    };
 	}
