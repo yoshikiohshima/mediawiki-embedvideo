@@ -250,6 +250,7 @@ window.subtitleSelected = function(div) {
     if (val !== null && player) {
 	if (player.seekTo) {//YouTube Player
 	    player.seekTo(val, true);
+	    player.playVideo();
 	}
 	if (player.setCurrentTime) {//Vimeo Player
 	    player.setCurrentTime(val).then(function(seconds) {
