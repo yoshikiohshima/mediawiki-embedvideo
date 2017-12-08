@@ -64,19 +64,21 @@ function resizeHandler(self, iframe, parent, wrap, slideview) {
     wrap.width(newWidth).css('width', newWidth).attr('width', newWidth);
     wrap.height(newHeight).css('height', newHeight).attr('height', newHeight);
 
-    if (!slideview) {return;}
-    var aspect = slideview.attr("data-orig-ratio");
-    if (aspect === undefined) {
-	aspect = slideview.width() / slideview.height();
-        slideview.attr("data-orig-ratio", aspect);
+    if (slideview) {
+	var aspect = slideview.attr("data-orig-ratio");
+	if (aspect === undefined) {
+	    aspect = slideview.width() / slideview.height();
+            slideview.attr("data-orig-ratio", aspect);
+	}
+	
+	var newWidth = parent.width() * 0.40;
+	var newHeight = newWidth / aspect;
+	
+	slideview.width(newWidth).css('width', newWidth).attr('width', newWidth);
+	slideview.height(newHeight).css('height', newHeight).attr('height', newHeight);
     }
 
-    var newWidth = parent.width() * 0.40;
-    var newHeight = newWidth / aspect;
-
-    slideview.width(newWidth).css('width', newWidth).attr('width', newWidth);
-    slideview.height(newHeight).css('height', newHeight).attr('height', newHeight);
-
+    padding.style.height = embedvideo.getBoundingClientRect().height + "px";
     window.onscroll();
 }
 
